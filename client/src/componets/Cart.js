@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FormControl, InputLabel, Input, FormHelperText, Button, TextField, Box, Typography, Card, CardContent, CardActions, List, ListItem } from '@mui/material';
+import { FormControl, InputLabel, Input, FormHelperText, Button, TextField, Box, Typography, List, ListItem, ListItemText } from '@mui/material';
 import Swal from 'sweetalert2';
 
 function EventManagement() {
@@ -9,30 +9,6 @@ function EventManagement() {
   const [reminder, setReminder] = useState("");
   const [events, setEvents] = useState([]);
   const [showEvents, setShowEvents] = useState(false);
-
-  const fetchEvents = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/user/protected-route");
-      setEvents(response.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-
-  const handleInputupdate = () => {
-    axios.put("http://localhost:8000/api/user/eventdata/:id",{})
-
-
-  }
-
-
-
-
 
 
 
@@ -65,6 +41,25 @@ function EventManagement() {
       });
     }
   };
+
+
+
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/user/eventdataget");
+      setEvents(response.data);
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+
 
   return (
     <Box 
@@ -154,19 +149,10 @@ function EventManagement() {
           <List>
             {events.map((event) => (
               <ListItem key={event.id}>
-                <Card sx={{ width: '100%' }}>
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      {event.title}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      Date: {event.date}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      Reminder: {event.reminder ? 'Yes' : 'No'}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <ListItemText 
+                  primary={event.title} 
+                  secondary={`Date: ${event.date} | Reminder: ${event.reminder ? 'Yes' : 'No'}`} 
+                />
               </ListItem>
             ))}
           </List>

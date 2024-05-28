@@ -52,14 +52,16 @@ routers.delete("/eventdata/:id", async (req, res) => {
 
 
 
-     routers.get("/eventdata", async (req, res) => {
+     routers.get('/protected-route',  async (req, res) => {
       try {
-        const eventdata = await event.find();
-        res.status(200).send({ message: "Event data retrieved successfully", eventdata });
-      } catch (e) {
-        console.error(e); // Log the error for debugging purposes
-        res.status(500).send({ error: "An error occurred while getting event data." });
+          const user = await event.find();
+          if (!user) {
+              return res.status(404).json({ error: 'User not found' });
+          }
+         res.status(200).send(user)
+      } catch (err) {
+          res.status(500).json({ error: err.message });
       }
-    });
+  });
 
 module.exports = routers;
